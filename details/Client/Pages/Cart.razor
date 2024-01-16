@@ -1,0 +1,96 @@
+﻿@page "/cart"
+@using details.Client.Services
+@using details.Shared
+@inject HotelRoomService HotelRoomService
+
+<h3>Shopping Cart</h3>
+
+@* @if (shoppingCart != null && shoppingCart.Any())
+{
+    foreach (var item in shoppingCart)
+    {
+        <div>
+            <p>Room Name: @item.HotelRoom.Name</p>
+            <p>Quantity: @item.HotelRoom.Location</p>
+            <p>Quantity: @item.HotelRoom.Size</p>
+            <p>Quantity: @item.HotelRoom.Price</p>
+            <p>Quantity: @item.Quantity</p>
+        </div>
+    }
+}
+else
+{
+    <p>Your shopping cart is empty.</p>
+} *@
+
+
+@if (shoppingCart != null && shoppingCart.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Name</th>
+                <th>Room Size</th>
+                <th>Room Location</th>
+                <th>Price</th>
+                <th>Remove from Cart</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in shoppingCart)
+            {
+                <tr>
+                    <td>@item.HotelRoom.Name</td>
+                    <td>@item.HotelRoom.Location</td>
+                    <td>@item.HotelRoom.Size</td>
+                    <p>£@item.HotelRoom.Price</p>
+                    <td> <button @onclick="() => RemoveFromCart(item)">Remove</button> </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <p>Total price: £@TotalPrice()</p>
+        <p>Deposit required (20%): £@DepositPrice()</p>
+        <button @onclick="Pay">Pay</button>
+    </div>
+}
+else
+{
+    <p>Your shopping cart is empty.</p>
+}
+
+@code {
+    private List<ShoppingCartItem> shoppingCart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        shoppingCart = await HotelRoomService.GetShoppingCart();
+    }
+
+    private async Task RemoveFromCart(ShoppingCartItem item)
+    {
+        await HotelRoomService.RemoveFromCart(item.ShoppingCartItemId);
+        // refresh cart
+        shoppingCart = await HotelRoomService.GetShoppingCart();
+    }
+
+    private decimal TotalPrice()
+    {
+        return shoppingCart.Sum(item => item.HotelRoom.Price * item.Quantity);
+    }
+
+    private decimal DepositPrice()
+    {
+        return TotalPrice() * 0.2m;
+    }
+
+    private async Task Pay()
+    {
+        // ADD PAYMENT FUNCTIONALITY HERE
+
+        Console.WriteLine("Payment successful");
+        shoppingCart.Clear();
+    }
+}

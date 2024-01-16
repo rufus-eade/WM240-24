@@ -1,0 +1,87 @@
+﻿@page "/fetchdata"
+@using details.Client.Services
+@using details.Shared
+
+@inject HotelRoomService HotelRoomService
+@inject NavigationManager NavigationManager
+
+<h3>Hotel Rooms</h3>
+
+@if (hotelRooms == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Name</th>
+                <th>Room Size</th>
+                <th>Room Location</th>
+                <th>Price</th>
+                <th>Cart</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in hotelRooms)
+            {
+                <tr>
+                    <td>@room.Name</td>
+                    <td>@room.Size</td>
+                    <td>@room.Location</td>
+                    <p>£@room.Price</p>
+                    <td> <button @onclick="() => AddToCart(room)">Add to Cart</button> </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<HotelRoom> hotelRooms;
+    private IEnumerable<ShoppingCartItem> shoppingCart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hotelRooms = await HotelRoomService.GetHotelRooms();
+        shoppingCart = await GetShoppingCart();
+    }
+
+    private async Task AddToCart(HotelRoom room)
+    {
+        await HotelRoomService.AddToCart(room.RoomId);
+        // refresh shopping cart
+        shoppingCart = await GetShoppingCart();
+    }
+
+    private async Task<IEnumerable<ShoppingCartItem>> GetShoppingCart()
+    {
+        return await HotelRoomService.GetShoppingCart();
+    }
+}
+
+@* @code {
+    private List<HotelRoom> hotelRooms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hotelRooms = await HotelRoomService.GetHotelRooms();
+    }
+    private void AddToCart(HotelRoom room)
+    {
+        CartService.AddToCart(room);
+        HotelRoomService.MarkRoomAsInCart(room.RoomId);
+    }
+
+    private async Task AddToCart(HotelRoom room)
+    {
+        await HotelRoomService.AddToCart(room.RoomId);
+    }
+
+    private async Task<IEnumerable<ShoppingCartItem>> GetShoppingCart()
+    {
+        return await HotelRoomService.GetShoppingCart();
+    }
+} *@
