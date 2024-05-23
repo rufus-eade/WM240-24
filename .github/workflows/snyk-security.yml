@@ -51,7 +51,7 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 7.0.x
 
         env:
           # This is where you will need to introduce the Snyk API token created with your Snyk account
