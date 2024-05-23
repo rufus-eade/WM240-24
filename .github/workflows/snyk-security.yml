@@ -6,17 +6,19 @@ on:
   pull_request:
     branches: ["master"]
 
-permissions:
-  contents: read
+
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # snyk:
+  #  snyk:
   #   name: Snyk Security Scan
   #   runs-on: ubuntu-latest
+
+  #   permissions:
+  #   contents: read
 
   #   steps:
   #   - name: Checkout repository
