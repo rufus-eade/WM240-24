@@ -13,35 +13,35 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  #  snyk:
-  #   name: Snyk Security Scan
-  #   runs-on: ubuntu-latest
+  snyk:
+    name: Snyk Security Scan
+    runs-on: ubuntu-latest
 
-  #   permissions:
-  #   contents: read
+    permissions:
+      contents: read
 
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-  #   - name: Setup .NET Core
-  #     uses: actions/setup-dotnet@v3
-  #     with:
-  #       dotnet-version: 7.0.x
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
 
-  #   - name: Install dependencies
-  #     run: dotnet restore
+    - name: Install dependencies
+      run: dotnet restore
 
-  #   - name: Install Snyk
-  #     run: npm install -g snyk
+    - name: Install Snyk
+      run: npm install -g snyk
 
-  #   - name: Authenticate Snyk
-  #     env:
-  #       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #     run: snyk auth $SNYK_TOKEN
+    - name: Authenticate Snyk
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: snyk auth $SNYK_TOKEN
 
-  #   - name: Run Snyk to check for vulnerabilities
-  #     run: snyk test --all-projects
+    - name: Run Snyk to check for vulnerabilities
+      run: snyk test --all-projects
   build-and-push-image:
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
